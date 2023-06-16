@@ -1,5 +1,6 @@
 # Import necessary modules
 from flask import Flask, jsonify, request
+#from flask_restful import Resource, Api #add flask restful
 from extension import db, cors
 from models import User
 from api import AuthApi
@@ -28,13 +29,9 @@ def register_api(view, endpoint, url, pk='operation', pk_type='string'):
 
     if endpoint == 'auth_api':
         # Add a rule for operations that don't require a user_id
-        app.add_url_rule(f'{url}<string:{pk}>', 
+        app.add_url_rule(f'{url}/<string:{pk}>', 
                             view_func=view_func, 
-                            methods=['GET'])
-        # Add a rule for operations that do require a user_id
-        app.add_url_rule(f'{url}<string:{pk}>/<int:user_id>', 
-                            view_func=view_func, 
-                            methods=['GET', 'PUT', 'DELETE'])
+                            methods=['POST'])
     
 register_api(AuthApi, 'auth_api', '/auth/', pk='operation', pk_type='string')
 
