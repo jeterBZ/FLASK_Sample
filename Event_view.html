@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Event API</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Get Event</h1>
+    <form id="get-event-form">
+        <label for="event_id">Event ID:</label><br>
+        <input type="text" id="event_id" name="event_id"><br>
+        <input type="submit" value="Get Event">
+    </form>
+
+    <h2>Event Details:</h2>
+    <div id="event-details"></div>
+
+    <h2>Event Images:</h2>
+    <div id="image-thumbnails"></div>
+
+    <script>
+        $("#get-event-form").submit(function(e) {
+            e.preventDefault();
+            var event_id = $("#event_id").val();
+            $.ajax({
+                url: "http://localhost:5000/event/get/",
+                type: "GET",
+                data: {
+                    id: event_id // Here is the id parameter
+                },
+                success: function(data) {
+                    var details = "";
+                    for (const [key, value] of Object.entries(data)) {
+                        if (key !== "image_urls") {
+                            details += `<p>${key}: ${value}</p>`;
+                        }
+                    }
+                    $("#event-details").html(details);
+
+                    // Fetch all images for the event
+                    fetchEventImages(event_id);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $("#event-details").html(`<p>Error: ${textStatus}</p>`);
+                }
+            });
+        });
+
+        function fetchEventImages(event_id) {
+            $.ajax({
+                url: `http://localhost:5000/event/${event_id}/image`,
+                type: "GET",
+                success: function(data) {
+                    if (data && data.length > 0) {
+                        data.forEach(function(imageUrl) {
+                            $("#image-thumbnails").append(`<img class="thumbnail" src="${imageUrl}" alt="Event image" />`);
+                        });
+                    } else {
+                        $("#image-thumbnails").html("<p>No images available</p>");
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $("#image-thumbnails").html(`<p>Error: ${textStatus}</p>`);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

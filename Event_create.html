@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test Event API</title>
+    </head>
+    <body>
+        <h1>Create Event</h1>
+        <form action="http://localhost:5000/event/create" method="post" enctype="multipart/form-data">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title"><br>
+            <label for="description">Description:</label><br>
+            <input type="text" id="description" name="description"><br>
+            <label for="genra">Genre:</label><br>
+            <input type="text" id="genra" name="genra"><br>
+            <label for="location">Location:</label><br>
+            <input type="text" id="location" name="location"><br>
+            <label for="address">Address:</label><br>
+            <input type="text" id="address" name="address"><br>
+            <label for="start_time">Start Time:</label><br>
+            <input type="datetime-local" id="start_time" name="start_time"><br>
+            <label for="end_time">End Time:</label><br>
+            <input type="datetime-local" id="end_time" name="end_time"><br>
+            <label for="hostname">HostName:</label><br>
+            <input type="text" id="hostname" name="hostname"><br>
+            <label for="image">Upload image:</label><br>
+            <input type="file" id="image" name="image" accept="image/*"><br><br>
+            <input type="submit" value="Create Event">
+        </form>
+    </body>
+</html>

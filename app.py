@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 #from flask_restful import Resource, Api #add flask restful
 from extension import db, cors
 from models import User
-from api import AuthApi
+from api import AuthApi, HomeApi, SearchApi, EventApi
 import os
 
 app = Flask(__name__)
@@ -26,14 +26,21 @@ def create():
 # Register API rule
 def register_api(view, endpoint, url, pk='operation', pk_type='string'):
     view_func = view.as_view(endpoint)
-
-    if endpoint == 'auth_api':
-        # Add a rule for operations that don't require a user_id
-        app.add_url_rule(f'{url}/<string:{pk}>', 
-                            view_func=view_func, 
-                            methods=['POST'])
+    app.add_url_rule(url, defaults={pk: None},
+                     view_func=view_func, methods=['GET',])
+    app.add_url_rule(f'{url}/<string:{pk}>/', 
+                        view_func=view_func, 
+                        methods=['GET', 'POST', 'PUT', 'DELETE'])
     
 register_api(AuthApi, 'auth_api', '/auth/', pk='operation', pk_type='string')
+register_api(HomeApi, 'home_api', '/homePage/', pk='operation', pk_type='string')
+register_api(EventApi, 'event_api', '/event/', pk='operation', pk_type='string')
+
+@app.route('/event/<int:event_id>/image/', methods=['GET'])
+def get_event_image(event_id):
+    image_name = request.args.get('image_name') #for single image search
+    print(image_name)
+    return EventApi().get_image(event_id, image_name)
 
 if __name__ == '__main__':
     app.run(debug=True)
